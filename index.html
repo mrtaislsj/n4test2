@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>TOKYO NIGHT DRIVE // JLPT N4 模擬試験 500問</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Orbitron:wght@600;800&family=Shippori+Mincho:wght@600;800&display=swap');
+
+    :root {
+      --bg-void: #070316;
+      --bg-deep: #11082b;
+      --panel-bg: rgba(16, 10, 42, 0.84);
+      --panel-border: rgba(0, 245, 212, 0.45);
+      --neon-cyan: #00f5d4;
+      --neon-pink: #ff2a85;
+      --neon-amber: #ffb703;
+      --neon-purple: #9b5de5;
+      --text-main: #f8f7ff;
+      --text-muted: #b8b2d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg-void);
+      color: var(--text-main);
+      font-family: 'M PLUS Rounded 1c', 'Hiragino Kaku Gothic ProN', sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Animated City Pop Night Sky & Perspective Grid Canvas */
+    #citypop-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Subtle Retro CRT Scanlines */
+    .crt-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.22) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Full-Screen Game App Shell */
+    .app-shell {
+      position: relative;
+      z-index: 10;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       TOP NEON HUD BAR
+       ============================================================ */
+    .hud-bar {
+      height: 54px;
+      padding: 0 18px;
+      background: rgba(10, 5, 28, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--neon-pink);
+      box-shadow: 0 4px 20px rgba(255, 42, 133, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 12px rgba(255, 42, 133, 0.6);
+    }
+
+    .brand-text {
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 800;
+      font-size: 1.08rem;
+      letter-spacing: 1.5px;
+      background: linear-gradient(90deg, #fff, var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+
+    .hud-metrics {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .hud-pill {
+      background: rgba(25, 15, 62, 0.9);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 0 8px rgba(0, 245, 212, 0.2);
+    }
+
+    .hud-pill.amber {
+      border-color: var(--neon-amber);
+      color: var(--neon-amber);
+      box-shadow: 0 0 8px rgba(255, 183, 3, 0.2);
+    }
+
+    .hud-pill.pink {
+      border-color: var(--neon-pink);
+      color: #ff85b8;
+      box-shadow: 0 0 8px rgba(255, 42, 133, 0.25);
+    }
+
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .hud-btn:hover {
+      background: var(--neon-pink);
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 12px rgba(255, 42, 133, 0.6);
+    }
+
+    /* ============================================================
+       HORIZONTAL WORKSPACE (PC & iPad Landscape)
+       ============================================================ */
+    .workspace {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      padding: 14px 18px;
+      overflow: hidden;
+    }
+
+    /* Left Column: Unique Complex SVG + Permanent Reading Text */
+    .left-visual-col {
+      width: 44%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .svg-stage-card {
+      width: 100%;
+      height: 220px;
+      background: #08041a;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      transition: height 0.25s ease;
+    }
+
+    /* When no reading text is present, expand SVG card gracefully */
+    .left-visual-col.no-passage .svg-stage-card {
+      height: 310px;
+    }
+
+    .svg-stage-card svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Permanent Reading / Short Text Panel (Always shown when applicable) */
+    .passage-panel {
+      display: none;
+      flex: 1;
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--neon-amber);
+      border-radius: 10px;
+      padding: 12px 16px;
+      overflow-y: auto;
+      box-shadow: 0 0 18px rgba(255, 183, 3, 0.18);
+      user-select: text;
+    }
+
+    .passage-panel.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .passage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--neon-amber);
+      border-bottom: 1px dashed rgba(255, 183, 3, 0.45);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .passage-pin-tag {
+      background: rgba(255, 183, 3, 0.18);
+      border: 1px solid var(--neon-amber);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+    }
+
+    .passage-body {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.98rem;
+      line-height: 1.75;
+      color: #f3f0ff;
+      white-space: pre-line;
+    }
+
+    .passage-body p {
+      margin: 0 0 8px 0;
+    }
+
+    .passage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 0.84rem;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .passage-table th, .passage-table td {
+      border: 1px solid rgba(0, 245, 212, 0.45);
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .passage-table th {
+      background: rgba(0, 245, 212, 0.16);
+      color: var(--neon-cyan);
+      font-weight: 800;
+    }
+
+    .passage-table td {
+      background: rgba(12, 7, 34, 0.65);
+    }
+
+    .blank-highlight {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-weight: 800;
+      padding: 0 8px;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(255, 42, 133, 0.7);
+    }
+
+    /* Info Box when no passage */
+    .citypop-status-card {
+      flex: 1;
+      background: var(--panel-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(155, 93, 229, 0.4);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .left-visual-col:not(.no-passage) .citypop-status-card {
+      display: none;
+    }
+
+    /* Right Column: Question, Choices & Explanation */
+    .right-quiz-col {
+      width: 56%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .q-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .section-tag {
+      background: rgba(0, 245, 212, 0.14);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .retry-banner-pill {
+      display: none;
+      background: linear-gradient(90deg, #ff2a85, #ff6b35);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      animation: pulseGlow 1.5s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(255, 42, 133, 0.6); }
+      50% { box-shadow: 0 0 18px rgba(255, 183, 3, 0.9); }
+    }
+
+    .question-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 42, 133, 0.55);
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .q-number {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-pink);
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-right: 8px;
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.5);
+    }
+
+    .q-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.24rem;
+      font-weight: 800;
+      line-height: 1.6;
+      color: #ffffff;
+      white-space: pre-line;
+    }
+
+    .q-target-word {
+      color: var(--neon-amber);
+      text-decoration: underline;
+      text-decoration-color: var(--neon-cyan);
+      text-underline-offset: 4px;
+      padding: 0 2px;
+    }
+
+    .q-star-slot {
+      color: var(--neon-amber);
+      font-weight: 800;
+      text-shadow: 0 0 10px rgba(255, 183, 3, 0.8);
+    }
+
+    /* 2x2 Neon Choices Grid */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choice-btn {
+      background: rgba(22, 14, 56, 0.88);
+      border: 2px solid rgba(155, 93, 229, 0.55);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #f8f7ff;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 0 rgba(8, 4, 24, 0.9);
+    }
+
+    .choice-btn:hover:not([disabled]) {
+      background: rgba(42, 22, 98, 0.95);
+      border-color: var(--neon-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 0 14px rgba(0, 245, 212, 0.35), 0 4px 0 rgba(8, 4, 24, 0.9);
+    }
+
+    .choice-btn:active:not([disabled]) {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .choice-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 42, 133, 0.22);
+      border: 1.5px solid var(--neon-pink);
+      color: var(--neon-pink);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .choice-btn.wrong {
+      background: rgba(127, 29, 29, 0.85) !important;
+      border-color: #ff3b3b !important;
+      color: #fecaca !important;
+      animation: neonShake 0.35s ease;
+      opacity: 0.78;
+      cursor: not-allowed;
+    }
+
+    .choice-btn.wrong .choice-num {
+      border-color: #ff3b3b;
+      color: #fecaca;
+      background: rgba(255, 59, 59, 0.25);
+    }
+
+    @keyframes neonShake {
+      0%, 100% { transform: translateX(0); }
+      25%, 75% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+    }
+
+    .choice-btn.correct {
+      background: rgba(6, 78, 59, 0.9) !important;
+      border-color: var(--neon-cyan) !important;
+      color: #ecfdf5 !important;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.5) !important;
+    }
+
+    .choice-btn.correct .choice-num {
+      background: var(--neon-cyan) !important;
+      color: #070316 !important;
+      border-color: var(--neon-cyan) !important;
+    }
+
+    /* Explanation Card */
+    .explanation-card {
+      display: none;
+      background: rgba(13, 24, 52, 0.92);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 10px;
+      padding: 12px 16px;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.22);
+      animation: slideUp 0.28s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .exp-header {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--neon-cyan);
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed rgba(0, 245, 212, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .exp-body {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    /* Action Bar */
+    .action-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+
+    .feedback-msg {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ff7597;
+    }
+
+    .btn-next {
+      display: none;
+      background: linear-gradient(90deg, var(--neon-pink), #ff6b35);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(255, 42, 133, 0.55);
+      transition: transform 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-next:hover { transform: scale(1.03); }
+    .btn-next:active { transform: scale(0.98); }
+
+    /* ============================================================
+       START / PAPER SELECT / TRANSITION / FINISH SCREENS
+       ============================================================ */
+    .overlay-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: radial-gradient(circle at 50% 35%, rgba(36, 14, 78, 0.94), rgba(7, 3, 22, 0.98));
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .citypop-logo-box {
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.35), inset 0 0 20px rgba(255, 42, 133, 0.25);
+      background: rgba(12, 6, 36, 0.85);
+      border-radius: 14px;
+      padding: 22px 28px;
+      max-width: 760px;
+      width: 100%;
+    }
+
+    .logo-sub-en {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 3px;
+      color: var(--neon-cyan);
+      margin-bottom: 6px;
+    }
+
+    .logo-main-jp {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      margin: 0 0 6px 0;
+      background: linear-gradient(90deg, #fff, var(--neon-amber), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .papers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .paper-card-btn {
+      background: rgba(24, 14, 62, 0.92);
+      border: 2px solid rgba(0, 245, 212, 0.5);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .paper-card-btn:hover {
+      border-color: var(--neon-pink);
+      background: rgba(45, 20, 96, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px rgba(255, 42, 133, 0.45);
+    }
+
+    .paper-card-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.76rem;
+      color: var(--neon-cyan);
+      font-weight: 800;
+    }
+
+    .paper-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .paper-card-sub {
+      font-size: 0.8rem;
+      color: var(--neon-amber);
+    }
+
+    .paper-card-status {
+      font-size: 0.75rem;
+      color: #34d399;
+      margin-top: 2px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Directory Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(4, 2, 14, 0.88);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-panel {
+      background: #120930;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 780px;
+      max-height: 84vh;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 245, 212, 0.35);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+
+    .grid-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(155, 93, 229, 0.45);
+      border-radius: 5px;
+      padding: 6px 0;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .grid-pill.cleared {
+      background: rgba(6, 78, 59, 0.8);
+      border-color: var(--neon-cyan);
+      color: #a7f3d0;
+    }
+
+    .grid-pill.missed {
+      background: rgba(127, 29, 29, 0.8);
+      border-color: var(--neon-pink);
+      color: #fecaca;
+    }
+
+    .grid-pill.current {
+      background: var(--neon-pink);
+      border-color: #fff;
+      color: #fff;
+    }
+
+    /* ============================================================
+       VERTICAL PHONE LAYOUT (Portrait Mobile)
+       ============================================================ */
+    @media screen and (max-width: 767px) and (orientation: portrait), screen and (max-width: 600px) {
+      .hud-bar {
+        height: 48px;
+        padding: 0 10px;
+        gap: 6px;
+      }
+
+      .brand-text {
+        display: none;
+      }
+
+      .hud-pill {
+        font-size: 0.72rem;
+        padding: 3px 7px;
+      }
+
+      .hud-btn {
+        font-size: 0.72rem;
+        padding: 4px 7px;
+      }
+
+      .workspace {
+        flex-direction: column;
+        padding: 8px 10px;
+        gap: 8px;
+        overflow-y: auto;
+      }
+
+      .left-visual-col {
+        width: 100%;
+        height: auto;
+        flex-shrink: 0;
+        gap: 8px;
+      }
+
+      .svg-stage-card,
+      .left-visual-col.no-passage .svg-stage-card {
+        height: 118px;
+      }
+
+      .citypop-status-card {
+        display: none !important;
+      }
+
+      /* Permanent reading text stays always visible above question on phone */
+      .passage-panel.active {
+        max-height: 23vh;
+        flex: none;
+        padding: 8px 10px;
+      }
+
+      .passage-body {
+        font-size: 0.86rem;
+        line-height: 1.55;
+      }
+
+      .right-quiz-col {
+        width: 100%;
+        height: auto;
+        flex: 1;
+        overflow-y: auto;
+        gap: 8px;
+        padding-right: 0;
+      }
+
+      .question-card {
+        padding: 10px 12px;
+      }
+
+      .q-text {
+        font-size: 1.02rem;
+        line-height: 1.48;
+      }
+
+      .choices-grid {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .choice-btn {
+        padding: 9px 12px;
+        font-size: 0.94rem;
+      }
+
+      .modal-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .logo-main-jp {
+        font-size: 1.45rem;
+      }
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10, 5, 28, 0.6); }
+    ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <canvas id="citypop-bg"></canvas>
+  <div class="crt-overlay"></div>
+
+  <div class="app-shell">
+    <!-- Top Neon HUD -->
+    <header class="hud-bar">
+      <div class="brand-title" onclick="returnToTitle()">
+        <span class="brand-badge">N4 // 500</span>
+        <span class="brand-text">TOKYO NIGHT DRIVE 模擬試験</span>
+      </div>
+      <div class="hud-metrics">
+        <span class="hud-pill amber" id="hud-paper">第1回</span>
+        <span class="hud-pill" id="hud-progress">問 1 / 100</span>
+        <span class="hud-pill" id="hud-score">初手正解: 0</span>
+        <span class="hud-pill pink" id="hud-retry">要復習: 0</span>
+        <button class="hud-btn" onclick="openCatalog()">一覧</button>
+        <button class="hud-btn" id="btn-sound" onclick="toggleSound()">🔊</button>
+        <button class="hud-btn" onclick="toggleFullscreen()">⛶</button>
+      </div>
+    </header>
+
+    <!-- Adaptive Horizontal (PC/iPad) / Vertical (Phone) Workspace -->
+    <div class="workspace">
+      <!-- Left Column: Unique Complex SVG + Permanent Reading Text -->
+      <section class="left-visual-col no-passage" id="left-col">
+        <div class="svg-stage-card" id="svg-stage"></div>
+
+        <!-- Always-visible Reading Comprehension / Short Text Container -->
+        <div class="passage-panel" id="passage-panel">
+          <div class="passage-header">
+            <span id="passage-title">読解本文</span>
+            <span class="passage-pin-tag">本文常時表示</span>
+          </div>
+          <div class="passage-body" id="passage-body"></div>
+        </div>
+
+        <!-- Ambient Telemetry Card when no reading text -->
+        <div class="citypop-status-card" id="status-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,245,212,0.25); padding-bottom:6px;">
+            <span style="font-family:'Orbitron',sans-serif; font-size:0.78rem; color:var(--neon-cyan);">SHUTO EXPRESSWAY // N4 MONITOR</span>
+            <span style="font-size:0.78rem; color:var(--neon-amber);" id="status-paper-label">第1回（問1〜問100）</span>
+          </div>
+          <div style="font-size:0.86rem; color:var(--text-muted); line-height:1.6; margin:8px 0;">
+            ・正解するまで何度でも挑戦できます。<br>
+            ・間違えた問題は、各回の100問終了後に<strong>復習ラウンド</strong>で再出題されます。
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--neon-pink); font-weight:700;">
+            <span id="status-scene-label">SCENE: TOKYO NIGHT</span>
+            <span id="status-qid-label">ID #001</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Question, 4 Choices & Detailed Explanation -->
+      <section class="right-quiz-col" id="right-col">
+        <div class="q-meta-row">
+          <span class="section-tag" id="section-tag">第1部：文字・語彙</span>
+          <span class="retry-banner-pill" id="retry-pill">🔥 復習ラウンド（間違えた問題に再挑戦）</span>
+        </div>
+
+        <div class="question-card">
+          <span class="q-number" id="q-num">問1.</span>
+          <span class="q-text" id="q-text">読み込み中...</span>
+        </div>
+
+        <div class="choices-grid" id="choices-grid"></div>
+
+        <div class="explanation-card" id="exp-card">
+          <div class="exp-header">💡 文法・語彙 解説</div>
+          <div class="exp-body" id="exp-text"></div>
+        </div>
+
+        <div class="action-footer">
+          <div class="feedback-msg" id="feedback-msg"></div>
+          <button class="btn-next" id="btn-next" onclick="nextQuestion()">次の問題へ ➜</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Title / Paper Select Overlay -->
+  <div class="overlay-screen" id="start-screen">
+    <div class="citypop-logo-box">
+      <div class="logo-sub-en">1986 TOKYO NIGHT VIEW // JLPT N4 COMPLETE</div>
+      <h1 class="logo-main-jp">日本語能力試験 N4 模擬試験 500問</h1>
+      <p class="logo-desc">
+        全5回（各回100問・全500問）の総合実戦トレーニング。<br>
+        間違えた問題は各回の最後に自動で再出題され、全問正解するまで徹底復習できます。
+      </p>
+
+      <div class="papers-grid" id="papers-grid"></div>
+
+      <div class="toggle-row">
+        <label class="toggle-label">
+          <input type="checkbox" id="chk-shuffle-q" />
+          <span>各回内の問題順をシャッフルする</span>
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="chk-shuffle-opt" checked />
+          <span>選択肢の順番をシャッフルする</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- End-of-Paper Retry Round Transition Screen -->
+  <div class="overlay-screen" id="retry-screen" style="display:none;">
+    <div class="citypop-logo-box" style="border-color: var(--neon-pink);">
+      <div class="logo-sub-en" style="color: var(--neon-pink);">END OF PAPER REVIEW // 復習ラウンド</div>
+      <h1 class="logo-main-jp" id="retry-screen-title">間違えた問題の再挑戦</h1>
+      <p class="logo-desc" id="retry-screen-desc"></p>
+      <button class="btn-next" style="display:inline-block; font-size:1.05rem; padding:12px 32px;" onclick="beginRetryRound()">復習ラウンドを開始する ➜</button>
+    </div>
+  </div>
+
+  <!-- Paper Complete Screen -->
+  <div class="overlay-screen" id="complete-screen" style="display:none;">
+    <div class="citypop-logo-box" style="border-color: var(--neon-cyan);">
+      <div class="logo-sub-en">STAGE CLEAR // 模擬試験完了</div>
+      <h1 class="logo-main-jp" id="complete-title">第1回 模擬試験 完走！</h1>
+      <p class="logo-desc" id="complete-desc"></p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-next" id="btn-next-paper" style="display:inline-block;" onclick="startNextPaper()">次の回へ進む ➜</button>
+        <button class="hud-btn" style="padding:10px 20px; font-size:0.95rem;" onclick="returnToTitle()">回選択へ戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question Directory Modal -->
+  <div class="modal-backdrop" id="catalog-modal">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <span style="font-weight:800; color:var(--neon-cyan); font-size:1.05rem;" id="catalog-title">第1回 問題一覧</span>
+        <button class="hud-btn" onclick="closeCatalog()">閉じる ✕</button>
+      </div>
+      <div class="modal-grid" id="catalog-grid"></div>
+    </div>
+  </div>
+
+  <!-- Load External 500-Question Dataset -->
+  <script src="n4_500_questions.js"></script>
+  <script>
+    /* ============================================================
+       80s CITY POP / SYNTHWAVE WEB AUDIO ENGINE
+       ============================================================ */
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('btn-sound').textContent = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) initAudio();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function playSynthCorrect() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        // 80s FM Electric Piano Maj9 arpeggio
+        const notes = [523.25, 659.25, 783.99, 987.77, 1174.66];
+        notes.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.055);
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime + i * 0.055);
+          gain.gain.exponentialRampToValueAtTime(0.14, audioCtx.currentTime + i * 0.055 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + i * 0.055 + 0.55);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + i * 0.055);
+          osc.stop(audioCtx.currentTime + i * 0.055 + 0.6);
+        });
+      } catch (e) {}
+    }
+
+    function playSynthWrong() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(165, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(55, audioCtx.currentTime + 0.24);
+        gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.26);
+      } catch (e) {}
+    }
+
+    function playSynthBlip() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.06);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.07);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    /* ============================================================
+       UNIQUE & COMPLEX QUESTION-RELATED SVG ARTWORK GENERATOR (500 SVGs)
+       ============================================================ */
+    function detectQuestionScene(q) {
+      const text = (q.q || '') + ' ' + (q.passageTitle || '') + ' ' + (q.passage || '');
+      if (/電車|新幹線|駅|切符|乗車|搭乗|空港|飛行機|バス|運転|自転車|車|渋滞|交通|道路/.test(text)) return 'transit';
+      if (/病院|熱|風邪|薬|医者|院長|診察|入院|お見舞い|健康|歯|体/.test(text)) return 'hospital';
+      if (/図書館|本|読書|小説|古本|電子書籍|辞書|漢字|勉強|試験|テスト|大学|授業|学校|宿題/.test(text)) return 'study';
+      if (/料理|パン|カレー|ラーメン|寿司|ケーキ|お茶|コーヒー|牛乳|スープ|弁当|居酒屋|カフェ|レストラン|食べ|飲み|野菜|りんご|冷蔵庫|お湯|沸/.test(text)) return 'dining';
+      if (/雨|台風|雪|空|天気|風|桜|花見|春|夏|秋|冬|季節|山|ハイキング|キャンプ/.test(text)) return 'weather_nature';
+      if (/水泳|プール|泳|スポーツ|卓球|バドミントン|ヨガ|テニス|サッカー|ジム|運動/.test(text)) return 'sports';
+      if (/祭り|花火|浴衣|和太鼓|神社|お寺|京都|伝統|美術館|絵|写真|ギター|ピアノ|音楽/.test(text)) return 'culture';
+      if (/郵便|荷物|配達|置き配|手紙|メール|電話|パソコン|申請|書類|会社|会議|出張|残業|アルバイト/.test(text)) return 'office_post';
+      if (/ごみ|リサイクル|掃除|部屋|マンション|アパート|引越し|家具|エアコン|電気|停電|水道|財布|お金|買い物/.test(text)) return 'daily_life';
+      return 'tokyo_night';
+    }
+
+    function extractMotifChar(q) {
+      const m = (q.q || '').match(/【([^】]+)】/);
+      if (m && m[1]) {
+        return m[1].slice(0, 2);
+      }
+      const kanji = (q.q || '').match(/[\u4E00-\u9FAF]/);
+      return kanji ? kanji[0] : 'N4';
+    }
+
+    function generateComplexQuestionSVG(q) {
+      const id = q.id;
+      const scene = detectQuestionScene(q);
+      const motif = extractMotifChar(q);
+
+      // Deterministic pseudo-random variations per question ID so all 500 SVGs are unique
+      const hue1 = (id * 37) % 360;
+      const hue2 = (hue1 + 145) % 360;
+      const sunX = 110 + ((id * 53) % 260);
+      const sunY = 58 + ((id * 19) % 28);
+      const sunR = 26 + (id % 12);
+      const starOffset = (id * 29) % 100;
+
+      // Generate unique twinkling starfield
+      let stars = '';
+      for (let i = 0; i < 18; i++) {
+        const sx = ((id * 41 + i * 73) % 460) + 10;
+        const sy = ((id * 17 + i * 31) % 78) + 8;
+        const sr = (i % 3 === 0) ? 1.6 : 0.9;
+        const op = (0.4 + ((i + id) % 6) * 0.1).toFixed(2);
+        stars += `<circle cx="${sx}" cy="${sy}" r="${sr}" fill="#ffffff" opacity="${op}"/>`;
+      }
+
+      // Generate unique Tokyo skyline silhouette buildings
+      let skyline = '';
+      for (let b = 0; b < 11; b++) {
+        const bx = b * 44 + ((id + b) % 7) - 3;
+        const bw = 34 + ((id * 3 + b * 7) % 14);
+        const bh = 38 + ((id * 11 + b * 23) % 52);
+        const by = 148 - bh;
+        skyline += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="#0c0624" stroke="rgba(0,245,212,0.28)" stroke-width="1"/>`;
+        // Lit neon windows
+        for (let wy = by + 6; wy < 140; wy += 9) {
+          if ((wy + id + b) % 3 !== 0) {
+            const winCol = ((wy + b) % 2 === 0) ? '#00f5d4' : '#ffb703';
+            skyline += `<rect x="${bx + 5}" y="${wy}" width="${bw - 10}" height="2.5" fill="${winCol}" opacity="0.55"/>`;
+          }
+        }
+      }
+
+      // Scene-specific foreground intricate vector art
+      let foreground = '';
+      if (scene === 'transit') {
+        // Shinkansen / Highway / Airplane night scene
+        foreground = `
+          <rect x="0" y="146" width="480" height="54" fill="#09041c"/>
+          <line x1="0" y1="154" x2="480" y2="154" stroke="#ff2a85" stroke-width="2.5"/>
+          <line x1="0" y1="184" x2="480" y2="184" stroke="#00f5d4" stroke-width="2" stroke-dasharray="18,12"/>
+          <!-- Bullet Train / Vehicle -->
+          <g transform="translate(${20 + (id % 60)}, 114)">
+            <path d="M10,32 L290,32 Q345,32 370,46 L10,46 Z" fill="#f8f7ff" stroke="#00f5d4" stroke-width="1.5"/>
+            <path d="M10,37 L305,37 Q338,37 356,46 L10,46 Z" fill="#ff2a85"/>
+            <path d="M322,34 Q342,35 352,40 L322,40 Z" fill="#070316"/>
+            <rect x="40" y="34" width="22" height="5" rx="1" fill="#00f5d4"/>
+            <rect x="75" y="34" width="22" height="5" rx="1" fill="#00f5d4"/>
+            <rect x="110" y="34" width="22" height="5" rx="1" fill="#00f5d4"/>
+            <rect x="145" y="34" width="22" height="5" rx="1" fill="#00f5d4"/>
+            <rect x="180" y="34" width="22" height="5" rx="1" fill="#00f5d4"/>
+            <circle cx="364" cy="43" r="3" fill="#ffb703"/>
+          </g>
+          <!-- Airplane contrail in upper sky -->
+          <path d="M${60 + (id % 120)},32 L${180 + (id % 120)},22" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.8"/>
+          <polygon points="${182 + (id % 120)},22 ${170 + (id % 120)},19 ${172 + (id % 120)},25" fill="#fff"/>
+        `;
+      } else if (scene === 'hospital') {
+        foreground = `
+          <rect x="0" y="148" width="480" height="52" fill="#0b0622"/>
+          <rect x="145" y="64" width="190" height="84" rx="4" fill="#130b36" stroke="#00f5d4" stroke-width="2"/>
+          <rect x="222" y="76" width="36" height="36" rx="6" fill="rgba(255,42,133,0.2)" stroke="#ff2a85" stroke-width="2"/>
+          <rect x="236" y="82" width="8" height="24" fill="#ff2a85"/>
+          <rect x="228" y="90" width="24" height="8" fill="#ff2a85"/>
+          <rect x="165" y="118" width="150" height="30" fill="#070316" stroke="#ffb703" stroke-width="1.5"/>
+          <line x1="175" y1="133" x2="215" y2="133" stroke="#00f5d4" stroke-width="2"/>
+          <polyline points="215,133 223,121 231,143 239,125 247,133 305,133" fill="none" stroke="#ff2a85" stroke-width="2.2"/>
+        `;
+      } else if (scene === 'study') {
+        foreground = `
+          <rect x="0" y="145" width="480" height="55" fill="#11082e"/>
+          <!-- Open Glowing Book & Study Desk -->
+          <polygon points="120,148 240,136 240,180 120,188" fill="#1e134b" stroke="#00f5d4" stroke-width="1.8"/>
+          <polygon points="360,148 240,136 240,180 360,188" fill="#180e3d" stroke="#00f5d4" stroke-width="1.8"/>
+          <line x1="140" y1="154" x2="225" y2="146" stroke="#ffb703" stroke-width="1.5"/>
+          <line x1="140" y1="164" x2="225" y2="156" stroke="#b8b2d8" stroke-width="1.2"/>
+          <line x1="255" y1="146" x2="340" y2="154" stroke="#ff2a85" stroke-width="1.5"/>
+          <line x1="255" y1="156" x2="340" y2="164" stroke="#b8b2d8" stroke-width="1.2"/>
+          <!-- Floating Kanji Hologram -->
+          <circle cx="240" cy="96" r="28" fill="rgba(0,245,212,0.12)" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="5,3"/>
+        `;
+      } else if (scene === 'dining') {
+        foreground = `
+          <rect x="0" y="142" width="480" height="58" fill="#140933"/>
+          <!-- Japanese Kissaten / Ramen Counter -->
+          <path d="M165,132 Q240,182 315,132 Z" fill="#ff2a85" stroke="#ffb703" stroke-width="2"/>
+          <ellipse cx="240" cy="132" rx="75" ry="14" fill="#1e0f45" stroke="#00f5d4" stroke-width="2"/>
+          <path d="M195,132 Q215,122 235,132 T285,132" fill="none" stroke="#ffb703" stroke-width="3"/>
+          <!-- Rising Neon Steam -->
+          <path d="M215,112 Q208,96 218,82" fill="none" stroke="#00f5d4" stroke-width="2" opacity="0.8"/>
+          <path d="M240,108 Q248,92 238,76" fill="none" stroke="#fff" stroke-width="2" opacity="0.8"/>
+          <path d="M265,112 Q258,96 268,82" fill="none" stroke="#ff2a85" stroke-width="2" opacity="0.8"/>
+          <!-- Chopsticks -->
+          <line x1="275" y1="115" x2="365" y2="105" stroke="#ffb703" stroke-width="3"/>
+          <line x1="275" y1="121" x2="365" y2="114" stroke="#ffb703" stroke-width="3"/>
+        `;
+      } else if (scene === 'weather_nature') {
+        foreground = `
+          <!-- Mt. Fuji Silhouette & Seasonal Waves -->
+          <polygon points="240,56 125,152 355,152" fill="#180d3d" stroke="#00f5d4" stroke-width="1.8"/>
+          <polygon points="240,56 205,86 222,82 240,90 258,82 275,86" fill="#f8f7ff"/>
+          <path d="M0,152 Q60,136 120,152 T240,152 T360,152 T480,152 L480,200 L0,200 Z" fill="#0d0626" stroke="#ff2a85" stroke-width="2"/>
+          <path d="M0,168 Q60,154 120,168 T240,168 T360,168 T480,168" fill="none" stroke="#00f5d4" stroke-width="1.5"/>
+        `;
+      } else if (scene === 'sports') {
+        foreground = `
+          <rect x="0" y="132" width="480" height="68" fill="#071936"/>
+          <line x1="40" y1="148" x2="440" y2="148" stroke="#00f5d4" stroke-width="2" stroke-dasharray="10,6"/>
+          <line x1="20" y1="168" x2="460" y2="168" stroke="#ff2a85" stroke-width="2" stroke-dasharray="10,6"/>
+          <circle cx="${160 + (id % 160)}" cy="122" r="14" fill="none" stroke="#ffb703" stroke-width="2.5"/>
+          <path d="M${148 + (id % 160)},116 Q${160 + (id % 160)},126 ${172 + (id % 160)},116" fill="none" stroke="#00f5d4" stroke-width="1.8"/>
+        `;
+      } else if (scene === 'culture') {
+        foreground = `
+          <rect x="0" y="148" width="480" height="52" fill="#0b0520"/>
+          <!-- Neon Shrine Torii Gate & Fireworks -->
+          <path d="M165,78 Q240,68 315,78 L322,85 Q240,75 158,85 Z" fill="#ff2a85"/>
+          <rect x="180" y="94" width="120" height="7" fill="#ff2a85"/>
+          <rect x="196" y="80" width="11" height="68" fill="#ff2a85"/>
+          <rect x="273" y="80" width="11" height="68" fill="#ff2a85"/>
+          <circle cx="110" cy="52" r="22" fill="none" stroke="#ffb703" stroke-width="1.5" stroke-dasharray="3,4"/>
+          <circle cx="370" cy="48" r="26" fill="none" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="3,4"/>
+        `;
+      } else if (scene === 'office_post') {
+        foreground = `
+          <rect x="0" y="146" width="480" height="54" fill="#0d0626"/>
+          <!-- Neon Envelope & Terminal Screen -->
+          <rect x="150" y="82" width="180" height="64" rx="6" fill="#130a38" stroke="#00f5d4" stroke-width="2"/>
+          <polyline points="150,82 240,122 330,82" fill="none" stroke="#ff2a85" stroke-width="2.2"/>
+          <rect x="292" y="90" width="26" height="20" fill="rgba(255,183,3,0.2)" stroke="#ffb703" stroke-width="1.5"/>
+        `;
+      } else {
+        // Tokyo Bay Suspension Bridge & Expressway Nightscape
+        foreground = `
+          <rect x="0" y="148" width="480" height="52" fill="#07041c"/>
+          <path d="M0,148 Q120,104 240,148 Q360,104 480,148" fill="none" stroke="#00f5d4" stroke-width="2"/>
+          <line x1="120" y1="100" x2="120" y2="152" stroke="#ff2a85" stroke-width="4"/>
+          <line x1="360" y1="100" x2="360" y2="152" stroke="#ff2a85" stroke-width="4"/>
+          <line x1="0" y1="152" x2="480" y2="152" stroke="#ffb703" stroke-width="2.5"/>
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 480 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky_${id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#070316"/>
+              <stop offset="55%" stop-color="hsl(${hue1}, 65%, 16%)"/>
+              <stop offset="100%" stop-color="hsl(${hue2}, 70%, 24%)"/>
+            </linearGradient>
+            <linearGradient id="sun_${id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffb703"/>
+              <stop offset="100%" stop-color="#ff2a85"/>
+            </linearGradient>
+          </defs>
+          <rect width="480" height="200" fill="url(#sky_${id})"/>
+          ${stars}
+          <!-- Striped City Pop Sun / Moon -->
+          <circle cx="${sunX}" cy="${sunY}" r="${sunR}" fill="url(#sun_${id})" opacity="0.9"/>
+          <line x1="${sunX - sunR}" y1="${sunY + 6}" x2="${sunX + sunR}" y2="${sunY + 6}" stroke="#11082b" stroke-width="2"/>
+          <line x1="${sunX - sunR}" y1="${sunY + 13}" x2="${sunX + sunR}" y2="${sunY + 13}" stroke="#11082b" stroke-width="3"/>
+          <line x1="${sunX - sunR}" y1="${sunY + 20}" x2="${sunX + sunR}" y2="${sunY + 20}" stroke="#11082b" stroke-width="4"/>
+          ${skyline}
+          ${foreground}
+          <!-- Top-Left Neon Kanji Motif Badge -->
+          <g transform="translate(12, 12)">
+            <rect width="46" height="26" rx="4" fill="rgba(7,3,22,0.85)" stroke="#00f5d4" stroke-width="1.5"/>
+            <text x="23" y="18" font-family="'Shippori Mincho', serif" font-size="13" font-weight="800" fill="#00f5d4" text-anchor="middle">${motif}</text>
+          </g>
+          <!-- Top-Right Question ID Telemetry -->
+          <g transform="translate(392, 12)">
+            <rect width="76" height="26" rx="4" fill="rgba(7,3,22,0.85)" stroke="#ff2a85" stroke-width="1.5"/>
+            <text x="38" y="17" font-family="'Orbitron', sans-serif" font-size="11" font-weight="800" fill="#ffb703" text-anchor="middle">Q.${String(id).padStart(3, '0')}</text>
+          </g>
+        </svg>
+      `;
+    }
+
+    /* ============================================================
+       GAME STATE & INFINITE-TRY + END-OF-PAPER RETRY ENGINE
+       ============================================================ */
+    let currentPaperIndex = 0; // 0..4
+    let activeQueue = [];
+    let currentIndex = 0;
+    let firstTryCorrectCount = 0;
+    let hadWrongOnCurrent = false;
+    let isRetryRound = false;
+    let retryQueue = [];
+    let retryIdSet = new Set();
+    let clearedIdSet = new Set();
+    let completedPapers = new Set();
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function renderTitleScreen() {
+      const grid = document.getElementById('papers-grid');
+      grid.innerHTML = '';
+      if (!window.JLPT_N4_PAPERS) return;
+
+      window.JLPT_N4_PAPERS.forEach((paper, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'paper-card-btn';
+        const isDone = completedPapers.has(paper.paperNum);
+        btn.innerHTML = `
+          <span class="paper-card-num">PAPER 0${paper.paperNum}</span>
+          <span class="paper-card-title">${paper.title}</span>
+          <span class="paper-card-sub">${paper.subtitle}</span>
+          <span class="paper-card-status">${isDone ? '★ 完走済み（再挑戦可）' : '▶ クリックして開始'}</span>
+        `;
+        btn.onclick = () => startPaper(idx);
+        grid.appendChild(btn);
+      });
+    }
+
+    function startPaper(paperIdx) {
+      initAudio();
+      playSynthBlip();
+      currentPaperIndex = paperIdx;
+      const paper = window.JLPT_N4_PAPERS[paperIdx];
+      const doShuffleQ = document.getElementById('chk-shuffle-q').checked;
+
+      let list = [...paper.questions];
+      if (doShuffleQ) list = shuffleArray(list);
+
+      activeQueue = list;
+      currentIndex = 0;
+      firstTryCorrectCount = 0;
+      isRetryRound = false;
+      retryQueue = [];
+      retryIdSet.clear();
+      clearedIdSet.clear();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('retry-screen').style.display = 'none';
+      document.getElementById('complete-screen').style.display = 'none';
+      renderQuestion();
+    }
+
+    function formatQuestionPrompt(rawQ) {
+      // Highlight 【target word】 and ★
+      return rawQ
+        .replace(/【([^】]+)】/g, '<span class="q-target-word">【$1】</span>')
+        .replace(/★/g, '<span class="q-star-slot">★</span>');
+    }
+
+    function formatPassageWithActiveBlank(q) {
+      if (q.passageHtml) {
+        return q.passageHtml;
+      }
+      const raw = q.passage || '';
+      const targetBlank = `［ ${q.id} ］`;
+      return raw.replace(targetBlank, `<span class="blank-highlight">${targetBlank}</span>`);
+    }
+
+    function renderQuestion() {
+      hadWrongOnCurrent = false;
+      const paper = window.JLPT_N4_PAPERS[currentPaperIndex];
+      const q = activeQueue[currentIndex];
+      const doShuffleOpt = document.getElementById('chk-shuffle-opt').checked;
+
+      // Update HUD
+      document.getElementById('hud-paper').textContent = `第${paper.paperNum}回`;
+      document.getElementById('hud-progress').textContent = isRetryRound
+        ? `復習 ${currentIndex + 1} / ${activeQueue.length}`
+        : `問 ${currentIndex + 1} / ${activeQueue.length}`;
+      document.getElementById('hud-score').textContent = `初手正解: ${firstTryCorrectCount}`;
+      document.getElementById('hud-retry').textContent = `要復習: ${retryQueue.length}`;
+
+      document.getElementById('status-paper-label').textContent = `${paper.title}（${paper.subtitle}）`;
+      document.getElementById('status-scene-label').textContent = `SCENE: ${detectQuestionScene(q).toUpperCase()}`;
+      document.getElementById('status-qid-label').textContent = `ID #${String(q.id).padStart(3, '0')}`;
+
+      // Section & Retry Pill
+      document.getElementById('section-tag').textContent = q.part;
+      document.getElementById('retry-pill').style.display = isRetryRound ? 'inline-block' : 'none';
+
+      // Complex Unique Question SVG
+      document.getElementById('svg-stage').innerHTML = generateComplexQuestionSVG(q);
+
+      // Permanent Reading / Short Text Display
+      const leftCol = document.getElementById('left-col');
+      const passagePanel = document.getElementById('passage-panel');
+      if (q.passage || q.passageHtml) {
+        leftCol.classList.remove('no-passage');
+        passagePanel.classList.add('active');
+        document.getElementById('passage-title').textContent = q.passageTitle || '本文（常時表示）';
+        document.getElementById('passage-body').innerHTML = formatPassageWithActiveBlank(q);
+      } else {
+        leftCol.classList.add('no-passage');
+        passagePanel.classList.remove('active');
+      }
+
+      // Question Text
+      document.getElementById('q-num').textContent = `問${q.id}.`;
+      document.getElementById('q-text').innerHTML = formatQuestionPrompt(q.q);
+
+      // Reset Explanation & Feedback
+      document.getElementById('exp-card').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('feedback-msg').textContent = '';
+
+      // Render 4 Options
+      const indexedOptions = q.options.map((text, i) => ({
+        text,
+        isCorrect: (i + 1 === q.ans)
+      }));
+      const displayOptions = doShuffleOpt ? shuffleArray(indexedOptions) : indexedOptions;
+
+      const grid = document.getElementById('choices-grid');
+      grid.innerHTML = '';
+      displayOptions.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = `<span class="choice-num">${idx + 1}</span><span>${opt.text}</span>`;
+        btn.onclick = () => handleChoiceClick(opt, btn, q);
+        grid.appendChild(btn);
+      });
+
+      // Scroll right column to top on new question
+      document.getElementById('right-col').scrollTop = 0;
+    }
+
+    function handleChoiceClick(opt, btn, q) {
+      initAudio();
+      if (opt.isCorrect) {
+        // Correct Answer!
+        btn.classList.add('correct');
+        document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+        playSynthCorrect();
+        clearedIdSet.add(q.id);
+
+        if (!hadWrongOnCurrent && !isRetryRound) {
+          firstTryCorrectCount++;
+          document.getElementById('hud-score').textContent = `初手正解: ${firstTryCorrectCount}`;
+        }
+
+        const correctText = q.options[q.ans - 1];
+        document.getElementById('exp-text').innerHTML = `<strong>【正解：${correctText}】</strong><br>${q.exp}`;
+        document.getElementById('exp-card').style.display = 'block';
+        document.getElementById('feedback-msg').innerHTML = '<span style="color:var(--neon-cyan);">✨ 正解！解説を確認して次へ進みましょう。</span>';
+        document.getElementById('btn-next').style.display = 'inline-block';
+      } else {
+        // Wrong Answer -> Infinite tries, queue for end-of-paper retry!
+        hadWrongOnCurrent = true;
+        playSynthWrong();
+        btn.classList.add('wrong');
+        btn.disabled = true;
+
+        if (!retryIdSet.has(q.id)) {
+          retryIdSet.add(q.id);
+          retryQueue.push(q);
+          document.getElementById('hud-retry').textContent = `要復習: ${retryQueue.length}`;
+        }
+
+        document.getElementById('feedback-msg').textContent = '不正解です。正解するまで何度でも選べます（この回の最後に再出題されます）。';
+      }
+    }
+
+    function nextQuestion() {
+      playSynthBlip();
+      if (currentIndex < activeQueue.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        // Reached end of current queue: check if wrong questions need to be retried!
+        if (retryQueue.length > 0) {
+          const paper = window.JLPT_N4_PAPERS[currentPaperIndex];
+          document.getElementById('retry-screen-title').textContent = `${paper.title}：間違えた問題に再挑戦`;
+          document.getElementById('retry-screen-desc').innerHTML =
+            `今回のセットで間違えた問題が <strong>${retryQueue.length} 問</strong> あります。<br>全問正解するまで、もう一度復習しましょう！`;
+          document.getElementById('retry-screen').style.display = 'flex';
+        } else {
+          // Paper completely cleared!
+          const paper = window.JLPT_N4_PAPERS[currentPaperIndex];
+          completedPapers.add(paper.paperNum);
+          document.getElementById('complete-title').textContent = `${paper.title} 完走おめでとうございます！`;
+          document.getElementById('complete-desc').innerHTML =
+            `全100問および復習ラウンドをすべてクリアしました！<br>初手正解スコア：<strong>${firstTryCorrectCount} / 100 問</strong>`;
+
+          const btnNextPaper = document.getElementById('btn-next-paper');
+          if (currentPaperIndex < window.JLPT_N4_PAPERS.length - 1) {
+            btnNextPaper.style.display = 'inline-block';
+            btnNextPaper.textContent = `第${currentPaperIndex + 2}回 模擬試験へ進む ➜`;
+          } else {
+            btnNextPaper.style.display = 'none';
+          }
+          document.getElementById('complete-screen').style.display = 'flex';
+        }
+      }
+    }
+
+    function beginRetryRound() {
+      playSynthBlip();
+      activeQueue = [...retryQueue];
+      retryQueue = [];
+      retryIdSet.clear();
+      isRetryRound = true;
+      currentIndex = 0;
+      document.getElementById('retry-screen').style.display = 'none';
+      renderQuestion();
+    }
+
+    function startNextPaper() {
+      if (currentPaperIndex < window.JLPT_N4_PAPERS.length - 1) {
+        startPaper(currentPaperIndex + 1);
+      }
+    }
+
+    function returnToTitle() {
+      playSynthBlip();
+      renderTitleScreen();
+      document.getElementById('retry-screen').style.display = 'none';
+      document.getElementById('complete-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'flex';
+    }
+
+    /* ============================================================
+       QUESTION DIRECTORY MODAL
+       ============================================================ */
+    function openCatalog() {
+      playSynthBlip();
+      const paper = window.JLPT_N4_PAPERS[currentPaperIndex];
+      document.getElementById('catalog-title').textContent = `${paper.title} 問題一覧（${isRetryRound ? '復習ラウンド' : '本試験'}）`;
+      const grid = document.getElementById('catalog-grid');
+      grid.innerHTML = '';
+
+      activeQueue.forEach((q, idx) => {
+        const pill = document.createElement('div');
+        pill.className = 'grid-pill';
+        if (clearedIdSet.has(q.id)) pill.classList.add('cleared');
+        if (retryIdSet.has(q.id)) pill.classList.add('missed');
+        if (idx === currentIndex) pill.classList.add('current');
+        pill.textContent = `問${q.id}`;
+        pill.onclick = () => {
+          currentIndex = idx;
+          closeCatalog();
+          renderQuestion();
+        };
+        grid.appendChild(pill);
+      });
+
+      document.getElementById('catalog-modal').style.display = 'flex';
+    }
+
+    function closeCatalog() {
+      document.getElementById('catalog-modal').style.display = 'none';
+    }
+
+    /* ============================================================
+       ANIMATED CITY POP RETRO HORIZON & NIGHT SKY BACKGROUND
+       ============================================================ */
+    const bgCanvas = document.getElementById('citypop-bg');
+    const bgCtx = bgCanvas.getContext('2d');
+    let gridOffset = 0;
+    let bgStars = [];
+
+    function resizeBg() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+      bgStars = Array.from({ length: 70 }, () => ({
+        x: Math.random() * bgCanvas.width,
+        y: Math.random() * (bgCanvas.height * 0.65),
+        r: Math.random() * 1.6 + 0.4,
+        phase: Math.random() * Math.PI * 2
+      }));
+    }
+    window.addEventListener('resize', resizeBg);
+    resizeBg();
+
+    function drawCityPopBackground() {
+      const w = bgCanvas.width;
+      const h = bgCanvas.height;
+      const horizon = h * 0.66;
+
+      // Twilight sky gradient
+      const skyGrad = bgCtx.createLinearGradient(0, 0, 0, horizon);
+      skyGrad.addColorStop(0, '#070316');
+      skyGrad.addColorStop(0.55, '#170a3b');
+      skyGrad.addColorStop(1, '#36115a');
+      bgCtx.fillStyle = skyGrad;
+      bgCtx.fillRect(0, 0, w, horizon);
+
+      // Twinkling stars
+      const now = Date.now() * 0.002;
+      bgStars.forEach(s => {
+        const alpha = 0.35 + 0.55 * Math.abs(Math.sin(now + s.phase));
+        bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        bgCtx.beginPath();
+        bgCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        bgCtx.fill();
+      });
+
+      // Glowing Synthwave Sun at Horizon
+      const sunR = Math.min(w, h) * 0.16;
+      const sunGrad = bgCtx.createLinearGradient(0, horizon - sunR * 1.4, 0, horizon);
+      sunGrad.addColorStop(0, '#ffb703');
+      sunGrad.addColorStop(1, '#ff2a85');
+      bgCtx.fillStyle = sunGrad;
+      bgCtx.beginPath();
+      bgCtx.arc(w * 0.5, horizon - sunR * 0.2, sunR, Math.PI, 0);
+      bgCtx.fill();
+
+      // Synthwave Perspective Grid Floor
+      bgCtx.fillStyle = '#09041c';
+      bgCtx.fillRect(0, horizon, w, h - horizon);
+
+      bgCtx.strokeStyle = 'rgba(255, 42, 133, 0.32)';
+      bgCtx.lineWidth = 1;
+
+      // Perspective vertical lines
+      const numLines = 18;
+      for (let i = -numLines; i <= numLines; i++) {
+        bgCtx.beginPath();
+        bgCtx.moveTo(w * 0.5 + i * 24, horizon);
+        bgCtx.lineTo(w * 0.5 + i * 110, h);
+        bgCtx.stroke();
+      }
+
+      // Scrolling horizontal grid lines
+      gridOffset = (gridOffset + 0.45) % 28;
+      for (let y = horizon + gridOffset; y < h; y += 28) {
+        bgCtx.beginPath();
+        bgCtx.moveTo(0, y);
+        bgCtx.lineTo(w, y);
+        bgCtx.stroke();
+      }
+
+      // Horizon Neon Glow Line
+      bgCtx.strokeStyle = '#00f5d4';
+      bgCtx.lineWidth = 2;
+      bgCtx.beginPath();
+      bgCtx.moveTo(0, horizon);
+      bgCtx.lineTo(w, horizon);
+      bgCtx.stroke();
+
+      requestAnimationFrame(drawCityPopBackground);
+    }
+
+    // Boot
+    renderTitleScreen();
+    drawCityPopBackground();
+  </script>
+</body>
+</html>
